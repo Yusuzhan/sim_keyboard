@@ -35,12 +35,12 @@ class CustomButtonState extends State<CustomButton> with TickerProviderStateMixi
     );
     _colorAnimation = ColorTween(
       begin: const Color(0xffc3c3c3),
-      end: const Color(0xffc3c3c3),
+      end: const Color(0xffd3d3d3),
       // end: Colors.white,
     ).animate(_animationController);
     _contentColorAnimation = ColorTween(
       begin: const Color(0xFF787878),
-      end: const Color(0xFF9c9c9c),
+      end: const Color(0xFF535353),
     ).animate(_animationController);
     _paddingAnimation = Tween<double>(
       begin: 2,
@@ -53,43 +53,51 @@ class CustomButtonState extends State<CustomButton> with TickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    return PhysicalModel(
-      color: const Color(0xffb6b6b6),
-      elevation: 8,
-      shadowColor: Colors.blue,
-      child: InkWell(
-        onTapDown: (_) {
-          setState(() {
-            pressing = true;
-          });
-        },
-        onTapUp: (_) {
-          setState(() {
-            pressing = false;
-          });
-        },
-        onTapCancel: () {
-          setState(() {
-            pressing = false;
-          });
-        },
-        onTap: () async {
-          widget.callback?.call();
-          AudioPlayer().play(
-            AssetSource('audio/click1.mp3'),
-            mode: PlayerMode.lowLatency,
-          );
-          HapticFeedback.heavyImpact();
-          await _animationController.forward();
-          _animationController.reset();
-        },
-        child: Container(
-          color: _colorAnimation.value,
-          child: Padding(
-            padding: EdgeInsets.all(_paddingAnimation.value),
-            child: Container(
-              color: const Color(0xffb6b6b6),
-              child: _content(),
+    return Padding(
+      padding: EdgeInsets.only(
+        top: _paddingAnimation.value,
+        left: _paddingAnimation.value / 2,
+        bottom: 4 - _paddingAnimation.value,
+        right: (4 - _paddingAnimation.value) / 2,
+      ),
+      child: PhysicalModel(
+        color: const Color(0xffb6b6b6),
+        elevation: 8,
+        shadowColor: Colors.blue,
+        child: InkWell(
+          onTapDown: (_) {
+            setState(() {
+              pressing = true;
+            });
+          },
+          onTapUp: (_) {
+            setState(() {
+              pressing = false;
+            });
+          },
+          onTapCancel: () {
+            setState(() {
+              pressing = false;
+            });
+          },
+          onTap: () async {
+            widget.callback?.call();
+            AudioPlayer().play(
+              AssetSource('audio/click1.mp3'),
+              mode: PlayerMode.lowLatency,
+            );
+            HapticFeedback.heavyImpact();
+            await _animationController.forward();
+            _animationController.reset();
+          },
+          child: Container(
+            color: _colorAnimation.value,
+            child: Padding(
+              padding: const EdgeInsets.all(2),
+              child: Container(
+                color: const Color(0xffb6b6b6),
+                child: _content(),
+              ),
             ),
           ),
         ),
