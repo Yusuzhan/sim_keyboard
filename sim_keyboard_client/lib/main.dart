@@ -1,7 +1,8 @@
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sim_keyboard_client/widgets/custom_button.dart';
+
+import 'logger.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,106 +50,48 @@ const buttonSetList = [
   ButtonSet('远光灯', 'end', image: 'headlamp.png'),
 ];
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
   @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+
+    final Orientation orientation = MediaQuery.of(context).orientation;
+    final bool isLandscape = orientation == Orientation.landscape;
+    final width = MediaQuery.of(context).size.width;
+    log("isLandscape = $isLandscape, width = $width");
+
     return Scaffold(
-      backgroundColor: Colors.grey[600],
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/background.jpg"),
-            fit: BoxFit.cover,
-          ),
+      backgroundColor: const Color(0x00000000),
+      body: Padding(
+        padding: const EdgeInsets.all(4),
+        child: GridView.count(
+          mainAxisSpacing: 4,
+          crossAxisSpacing: 4,
+          crossAxisCount: isLandscape ? 7 : 3,
+          children: _buttonList(),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: GridView.count(
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
-            crossAxisCount: 7,
-            children: _buttonList(),
-          ),
-        ) /* add child content here */,
       ),
     );
   }
 
   List<Widget> _buttonList() {
-    return buttonSetList.map((buttonSet) => CarButton(buttonSet: buttonSet)).toList();
-  }
-}
-
-class CarButton extends StatelessWidget {
-  final ButtonSet buttonSet;
-  const CarButton({
-    super.key,
-    required this.buttonSet,
-  });
-
-  Widget _content() {
-    return Padding(
-      padding: const EdgeInsets.all(4),
-      child: Column(
-        children: [
-          Expanded(
-            child: Image.asset(
-              'assets/images/${buttonSet.image}',
-              color: Colors.white,
-            ),
+    final List<Widget> a = [];
+    a.addAll(buttonSetList
+        .map(
+          (buttonSet) => CustomButton(
+            buttonSet: buttonSet,
+            callback: null,
           ),
-          Text(
-            buttonSet.title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith((state) {
-            return const Color(0xff090909);
-          }),
-          shape: MaterialStateProperty.resolveWith(
-            (states) {
-              if (states.contains(MaterialState.focused)) {
-                return const RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.red),
-                );
-              }
-              if (states.contains(MaterialState.pressed)) {
-                return const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  side: BorderSide(color: Colors.green),
-                );
-              }
-              if (states.contains(MaterialState.hovered)) {
-                return const RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.blue),
-                );
-              }
-            },
-          ),
-        ),
-        child: _content(),
-        onPressed: onPressed,
-      ),
-    );
-  }
-
-  void onPressed() {
-    AudioPlayer().play(AssetSource('audio/click1.mp3'));
-    HapticFeedback.heavyImpact();
+        )
+        .toList()
+        .sublist(0, 2));
+    return a;
   }
 }
