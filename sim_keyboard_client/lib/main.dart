@@ -68,12 +68,12 @@ class _MainPageState extends State<MainPage> {
     log("isLandscape = $isLandscape, width = $width");
 
     return Scaffold(
-      backgroundColor: const Color(0x00000000),
+      backgroundColor: const Color(0xffcfcfcf),
       body: Padding(
         padding: const EdgeInsets.all(4),
         child: GridView.count(
-          mainAxisSpacing: 4,
-          crossAxisSpacing: 4,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
           crossAxisCount: isLandscape ? 7 : 3,
           children: _buttonList(),
         ),
