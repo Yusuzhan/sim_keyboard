@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sim_keyboard_client/widgets/custom_button.dart';
@@ -58,6 +60,23 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  Socket? _socket;
+
+  void _connect() async {
+    _socket?.close();
+    if (_socket?.address == null) {
+      _socket = await Socket.connect("172.16.7.141", 5000);
+      log('ysz socket = ${_socket?.address}');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _connect();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
@@ -87,7 +106,9 @@ class _MainPageState extends State<MainPage> {
         .map(
           (buttonSet) => CustomButton(
             buttonSet: buttonSet,
-            callback: null,
+            callback: (buttonSet) {
+              _socket?.write(buttonSet.msg);
+            },
           ),
         )
         .toList()

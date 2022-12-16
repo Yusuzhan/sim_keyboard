@@ -1,18 +1,22 @@
+import 'dart:io';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sim_keyboard_client/main.dart';
 
-typedef TapCallback = Function();
+typedef TapCallback = Function(ButtonSet);
 
 class CustomButton extends StatefulWidget {
   final ButtonSet buttonSet;
   final TapCallback? callback;
+  final Socket? socket;
 
   const CustomButton({
     super.key,
     required this.buttonSet,
     this.callback,
+    this.socket,
   });
 
   @override
@@ -81,7 +85,7 @@ class CustomButtonState extends State<CustomButton> with TickerProviderStateMixi
             });
           },
           onTap: () async {
-            widget.callback?.call();
+            widget.callback?.call(widget.buttonSet);
             AudioPlayer().play(
               AssetSource('audio/click1.mp3'),
               mode: PlayerMode.lowLatency,

@@ -10,7 +10,7 @@ SERVER_INPUT_PACKET_SIZE = 16
 def server():
     # get the hostname
     host = socket.gethostname()
-    host = '127.0.0.1'
+    host = '0.0.0.0'
     print(host)
     port = 5000
 
@@ -19,7 +19,7 @@ def server():
     server_socket.bind((host, port))
 
     # configure how many client the server can listen simutaneosly
-    server_socket.listen(2)
+    server_socket.listen(10)
 
     conn, address = server_socket.accept() # accept new conneciton
     print("Connection from: " + str(address))

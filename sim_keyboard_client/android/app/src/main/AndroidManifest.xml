@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sim_keyboard_client">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
         android:label="sim_keyboard_client"
         android:name="${applicationName}"
